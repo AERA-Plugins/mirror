@@ -17,7 +17,8 @@ import tkinter as tk
 Image = None
 ImageTk = None
 
-INPUT_BRIDGE = r'''while IFS= read -r line; do
+INPUT_BRIDGE = r'''test -p /system/bin/foxin && test -p /system/bin/foxout || exit 78
+while IFS= read -r line; do
   printf '%s' "$line" > /system/bin/foxin &
   cat /system/bin/foxout >/dev/null
   wait
@@ -28,7 +29,22 @@ class Fox:
     def __init__(self, adb: str):
         self.adb = adb
 
+    def wait_for_fifos(self, timeout: float = 20.0):
+        deadline = time.monotonic() + timeout
+        paths = ("/system/bin/foxin", "/system/bin/foxout")
+        while time.monotonic() < deadline:
+            ready = all(subprocess.run(
+                [self.adb, "shell", "test", "-p", path],
+                stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL).returncode == 0
+                for path in paths)
+            if ready:
+                return
+            time.sleep(0.25)
+        raise RuntimeError(
+            "AERA's USB control channel is not ready. Reboot into the updated recovery.")
+
     def rpc(self, op: str, args: dict, timeout: float = 8.0) -> dict:
+        self.wait_for_fifos()
         request = json.dumps({"v": 1, "id": "aera-mirror", "op": op,
                               "args": args}, separators=(",", ":")).encode()
         reader = subprocess.Popen(
@@ -36,8 +52,8 @@ class Fox:
             stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         try:
             writer = subprocess.run(
-                [self.adb, "shell", "sh", "-c",
-                 "cat > /system/bin/foxin"], input=request,
+                [self.adb, "shell", "dd", "of=/system/bin/foxin",
+                 "status=none"], input=request,
                 stdout=subprocess.DEVNULL, stderr=subprocess.PIPE,
                 timeout=timeout)
             if writer.returncode:
@@ -49,11 +65,20 @@ class Fox:
             raise
         if reader.returncode:
             raise RuntimeError(error.decode(errors="replace").strip())
-        events = [json.loads(line) for line in output.splitlines() if line]
+        events = []
+        diagnostics = []
+        for line in output.splitlines():
+            if not line:
+                continue
+            try:
+                events.append(json.loads(line))
+            except (UnicodeDecodeError, json.JSONDecodeError):
+                diagnostics.append(line.decode(errors="replace"))
         result = next((item for item in reversed(events)
                        if item.get("event") == "result"), None)
         if not result or result.get("code") != 0:
-            raise RuntimeError("AERA rejected the mirror command")
+            detail = "; ".join(diagnostics).strip()
+            raise RuntimeError(detail or "AERA did not answer the mirror command")
         return next((item.get("value", {}) for item in events
                      if item.get("event") == "data"), {})
 
@@ -96,6 +121,7 @@ class Mirror:
 
     def start(self):
         try:
+            self.fox.wait_for_fifos()
             self.fox.rpc("screenstream", {"action": "start", "fps": self.fps})
         except Exception as error:
             self.status.configure(text=f"Could not start mirror: {error}", fg="#ff6b77")
