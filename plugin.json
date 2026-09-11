@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "id": "mirror",
+  "name": "AERA Mirror",
+  "version": "0.1.0",
+  "description": "View and control AERA Recovery from a computer over a low-latency USB connection.",
+  "type": "ui-runtime",
+  "entry": "main",
+  "min_host_api": 2,
+  "protocol_version": 2,
+  "executable": "usr/bin/aera-plugin",
+  "icon": "display",
+  "payload": "runtime.xz",
+  "payload_url": "https://github.com/AERA-Plugins/mirror/releases/download/v0.1.0/runtime.xz",
+  "payload_size": 16084,
+  "payload_sha256": "07b3c621c4e3db7a7023653f6874edfa8172ae1615ec9bb6027fadaf3b03fbd4",
+  "expanded_size": 32124,
+  "expanded_sha256": "706fd87086cdbfd8ac8d7064e5fab776eb28378cabc060e9645efe58bc40037f",
+  "member_count": 1,
+  "permissions": [
+    "display",
+    "touch-input",
+    "screen-mirror"
+  ]
+}
