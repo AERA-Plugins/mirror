@@ -10,6 +10,7 @@ Install Android platform-tools, Python 3, Tk, and Pillow. Boot AERA Recovery,
 connect USB, then run:
 
 ```sh
+sudo apt install adb python3-tk python3-pil python3-pil.imagetk
 python3 desktop/aera-mirror.py
 ```
 

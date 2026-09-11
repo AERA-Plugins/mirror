@@ -232,10 +232,16 @@ def main():
     parser.add_argument("--fps", type=int, choices=range(1, 31), default=30)
     arguments = parser.parse_args()
     try:
-        from PIL import Image as PillowImage, ImageTk as PillowImageTk
+        from PIL import Image as PillowImage
     except ImportError:
         raise SystemExit(
             "AERA Mirror requires Pillow: python3 -m pip install Pillow")
+    try:
+        from PIL import ImageTk as PillowImageTk
+    except ImportError:
+        raise SystemExit(
+            "Pillow has no Tk support. On Ubuntu/Pop!_OS install it with: "
+            "sudo apt install python3-pil.imagetk")
     Image, ImageTk = PillowImage, PillowImageTk
     if not shutil.which(arguments.adb) and not args_path(arguments.adb):
         raise SystemExit("adb was not found; pass its path using --adb")
