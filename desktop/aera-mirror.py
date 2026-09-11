@@ -14,10 +14,8 @@ import threading
 import time
 import tkinter as tk
 
-try:
-    from PIL import Image, ImageTk
-except ImportError:
-    raise SystemExit("AERA Mirror requires Pillow: python3 -m pip install Pillow")
+Image = None
+ImageTk = None
 
 INPUT_BRIDGE = r'''while IFS= read -r line; do
   printf '%s' "$line" > /system/bin/foxin &
@@ -67,7 +65,7 @@ class Mirror:
         self.adb = adb
         self.fps = fps
         self.closed = threading.Event()
-        self.frames: queue.Queue[Image.Image] = queue.Queue(maxsize=1)
+        self.frames: queue.Queue = queue.Queue(maxsize=1)
         self.input_events: queue.Queue[dict] = queue.Queue(maxsize=12)
         self.source_size = (1, 1)
         self.image_box = (0, 0, 1, 1)
@@ -228,10 +226,17 @@ class Mirror:
 
 
 def main():
+    global Image, ImageTk
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--adb", default=shutil.which("adb") or "adb")
     parser.add_argument("--fps", type=int, choices=range(1, 31), default=30)
     arguments = parser.parse_args()
+    try:
+        from PIL import Image as PillowImage, ImageTk as PillowImageTk
+    except ImportError:
+        raise SystemExit(
+            "AERA Mirror requires Pillow: python3 -m pip install Pillow")
+    Image, ImageTk = PillowImage, PillowImageTk
     if not shutil.which(arguments.adb) and not args_path(arguments.adb):
         raise SystemExit("adb was not found; pass its path using --adb")
     root = tk.Tk()
