@@ -15,7 +15,7 @@ enum kind {
   REQUEST_OPERATION, CLOSE_WORKER,
   HELLO_ACK = 64, ACTION, LIFECYCLE, OPERATION_RESULT
 };
-enum operation { START_MIRROR = 5, STOP_MIRROR = 6 };
+enum operation { START_USB_MIRROR = 5, STOP_MIRROR = 6, START_WIFI_MIRROR = 7 };
 
 struct message {
   uint32_t magic, version, kind, request_id, value, flags;
@@ -45,13 +45,14 @@ static int valid(const struct message *message) {
 
 static int publish_page(int fd) {
   return send_message(fd, BEGIN_PAGE, 0, 0, 0, "AERA Mirror",
-      "Control AERA Recovery from your computer over USB. Screen capture and "
-      "remote touch stay inside AERA's trusted host; this plugin never gets "
-      "direct framebuffer or input-device access.") ||
+      "Choose Wi-Fi for a zero-install browser connection, or USB for the "
+      "fast desktop client. Wi-Fi requires both devices on the same network.") ||
     send_message(fd, ADD_BUTTON, 1, 0, AERA_PRIMARY,
-                 "Start USB mirror", "Stream at up to 30 FPS over ADB") ||
+                 "Start Wi-Fi Mirror", "Enter the shown phone IP in any browser") ||
     send_message(fd, ADD_BUTTON, 2, 0, 0,
-                 "Stop USB mirror", "Close the active capture stream") ||
+                 "Start USB Mirror", "Use the AERA Mirror desktop client") ||
+    send_message(fd, ADD_BUTTON, 3, 0, 0,
+                 "Stop AERA Mirror", "Close the browser server and USB stream") ||
     send_message(fd, COMMIT_PAGE, 0, 0, 0, 0, 0);
 }
 
@@ -77,10 +78,10 @@ int main(void) {
       }
       continue;
     }
-    if (message.kind == ACTION &&
-        (message.request_id == 1 || message.request_id == 2)) {
-      const uint32_t operation = message.request_id == 1
-          ? START_MIRROR : STOP_MIRROR;
+    if (message.kind == ACTION && message.request_id >= 1 &&
+        message.request_id <= 3) {
+      const uint32_t operation = message.request_id == 1 ? START_WIFI_MIRROR :
+          message.request_id == 2 ? START_USB_MIRROR : STOP_MIRROR;
       if (send_message(fd, REQUEST_OPERATION, ++operation_request, operation,
                        0, 0, 0)) return 78;
       continue;

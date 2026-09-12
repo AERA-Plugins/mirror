@@ -4,8 +4,10 @@ from __future__ import annotations
 
 import argparse
 import base64
+import fcntl
 import io
 import json
+import os
 import queue
 import shlex
 import shutil
@@ -14,6 +16,7 @@ import sys
 import threading
 import time
 import tkinter as tk
+from tkinter import messagebox
 
 Image = None
 ImageTk = None
@@ -285,6 +288,15 @@ def main():
     parser.add_argument("--adb", default=shutil.which("adb") or "adb")
     parser.add_argument("--fps", type=int, choices=range(1, 31), default=30)
     arguments = parser.parse_args()
+    instance_lock = open(f"/tmp/aera-mirror-{os.getuid()}.lock", "w")
+    try:
+        fcntl.flock(instance_lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+    except BlockingIOError:
+        notice = tk.Tk()
+        notice.withdraw()
+        messagebox.showinfo("AERA Mirror", "AERA Mirror is already running.")
+        notice.destroy()
+        return
     try:
         from PIL import Image as PillowImage
     except ImportError:
@@ -300,6 +312,7 @@ def main():
     if not shutil.which(arguments.adb) and not args_path(arguments.adb):
         raise SystemExit("adb was not found; pass its path using --adb")
     root = tk.Tk()
+    root.instance_lock = instance_lock
     mirror = Mirror(root, arguments.adb, arguments.fps)
     root.after(100, mirror.start)
     root.mainloop()

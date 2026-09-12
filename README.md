@@ -1,8 +1,12 @@
 # AERA Mirror
 
-AERA Mirror displays and controls AERA Recovery on a Linux, macOS, or Windows
-computer over USB/ADB. The recovery host owns framebuffer capture and virtual
-input; the downloadable plugin only requests explicit start/stop operations.
+AERA Mirror displays and controls AERA Recovery from any modern browser on the
+same Wi-Fi network, or from Linux, macOS, and Windows over USB/ADB.
+
+For Wi-Fi, connect recovery and the computer to the same network, open AERA
+Mirror, choose **Start Wi-Fi Mirror**, and enter the displayed `http://PHONE_IP/`
+address in any browser. No desktop install is needed. Choose **Start USB Mirror**
+instead when using the desktop client below.
 
 ## Desktop client
 
