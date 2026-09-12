@@ -147,23 +147,22 @@ static int publish_home(int fd, const char *notice, int launchers_ready) {
   char address[96] = "Not connected to Wi-Fi";
   wifi_url(address, sizeof(address));
   snprintf(body, sizeof(body),
-      "Mirror this recovery to a computer, tablet, or another phone and "
-      "control it from a browser.\n\nWi-Fi browser address:\n%s\n\n"
-      "USB launchers: %s%s%s\n\nChoose how you want to connect.",
+      "View and control this recovery from a computer, tablet, or phone.\n\n"
+      "Wi-Fi address: %s\n\nDesktop launcher\n%s%s%s",
       address,
       launchers_ready ? "Internal Storage/AERA/Mirror/Desktop" :
                         "could not be written to phone storage",
       notice && notice[0] ? "\n\n" : "", notice && notice[0] ? notice : "");
-  return send_message(fd, BEGIN_PAGE, 0, 0, 0, "AERA Mirror",
+  return send_message(fd, BEGIN_PAGE, 0, 0, 0, "Connection center",
       body) ||
     send_message(fd, ADD_BUTTON, SHOW_WIFI_GUIDE, 0, AERA_PRIMARY,
-                 "Connect over Wi-Fi",
-                 "No download - both devices use the same Wi-Fi network") ||
+                 "Wi-Fi Mirror",
+                 "Open the live address from any browser on your network") ||
     send_message(fd, ADD_BUTTON, SHOW_USB_GUIDE, 0, 0,
-                 "Connect over USB",
-                 "Fast and private - requires ADB and the desktop launcher") ||
+                 "USB Mirror",
+                 "Low-latency connection through ADB and the desktop launcher") ||
     send_message(fd, ADD_BUTTON, STOP_ALL, 0, 0,
-                 "Stop mirroring", "Close every active mirror connection") ||
+                 "Stop Mirror", "Close every active mirror connection") ||
     send_message(fd, COMMIT_PAGE, 0, 0, 0, 0, 0);
 }
 
@@ -173,30 +172,27 @@ static int publish_wifi_guide(int fd, const char *result, int success) {
   wifi_url(address, sizeof(address));
   if (result && result[0]) {
     snprintf(body, sizeof(body),
-        "%s\n\n%s\n\n1. Keep AERA connected to Wi-Fi.\n"
-        "2. On the other device, open Chrome, Firefox, Safari, or Edge.\n"
-        "3. Type the exact http:// address shown above.\n"
-        "4. Use the browser window to view and control recovery.",
-        success ? "Wi-Fi Mirror is ready." : "Wi-Fi Mirror could not start.",
-        result);
+        "%s\n\nOpen the address above on any device connected to this Wi-Fi. "
+        "Keep this recovery awake while mirroring.", result);
   } else {
     snprintf(body, sizeof(body),
-        "Current browser address:\n%s\n\nNothing needs to be installed.\n\n"
-        "1. Connect AERA to Wi-Fi from Quick Settings or Menu > Wi-Fi.\n"
-        "2. Connect the viewing device to the same Wi-Fi network.\n"
-        "3. Tap Start below and approve the request.\n"
-        "4. Open the address above in any browser.", address);
+        "Browser address: %s\n\nConnect both devices to the same Wi-Fi, start "
+        "the mirror, then open this address in Chrome, Firefox, Safari, or Edge.",
+        address);
   }
   return send_message(fd, BEGIN_PAGE, 0, 0, 0,
-                      result && result[0] ? "Wi-Fi connection" : "Wi-Fi setup",
+                      success ? "Wi-Fi Mirror is live" :
+                      result && result[0] ? "Wi-Fi Mirror unavailable" :
+                                            "Wi-Fi Mirror",
                       body) ||
     send_message(fd, ADD_BUTTON, START_WIFI, 0, AERA_PRIMARY,
                  success ? "Restart Wi-Fi Mirror" : "Start Wi-Fi Mirror",
-                 "AERA will display the exact browser address") ||
+                 success ? "Restart the live browser session" :
+                           "Start sharing and show the live browser address") ||
     send_message(fd, ADD_BUTTON, SHOW_HOME, 0, 0,
                  "Choose another connection", "Return to Wi-Fi or USB selection") ||
     send_message(fd, ADD_BUTTON, STOP_ALL, 0, 0,
-                 "Stop mirroring", "Close every active mirror connection") ||
+                 "Stop Mirror", "Close every active mirror connection") ||
     send_message(fd, COMMIT_PAGE, 0, 0, 0, 0, 0);
 }
 
