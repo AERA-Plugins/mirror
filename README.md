@@ -8,6 +8,10 @@ Mirror, choose **Start Wi-Fi Mirror**, and enter the displayed `http://PHONE_IP/
 address in any browser. No desktop install is needed. Choose **Start USB Mirror**
 instead when using the desktop client below.
 
+The plugin detects and displays the current Wi-Fi address on its main page. It
+also exports the USB launchers to `Internal Storage/AERA/Mirror/Desktop` each
+time it opens, allowing them to be copied from the phone over MTP.
+
 ## USB one-click launcher
 
 Start **USB Mirror** in AERA, connect the cable, then run the launcher for the

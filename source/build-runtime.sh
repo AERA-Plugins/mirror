@@ -16,6 +16,11 @@ trap 'rm -rf "$build"' EXIT
   -Wl,-z,relro,-z,now -o "$build/aera-plugin"
 "$strip" --strip-unneeded "$build/aera-plugin"
 rm -rf "$output"
-mkdir -p "$output/usr/bin"
+mkdir -p "$output/usr/bin" "$output/usr/share/aera-mirror"
 cp "$build/aera-plugin" "$output/usr/bin/aera-plugin"
+cp "$source_dir/../desktop/start-aera-mirror-usb.cmd" \
+   "$source_dir/../desktop/start-aera-mirror-usb.sh" \
+   "$source_dir/../desktop/start-aera-mirror-usb.command" \
+   "$source_dir/../desktop/README.txt" \
+   "$output/usr/share/aera-mirror/"
 echo "Staged AERA Mirror runtime: $(du -sh "$output" | cut -f1)"
