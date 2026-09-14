@@ -2,7 +2,7 @@
   "schema": 1,
   "id": "mirror",
   "name": "AERA Mirror",
-  "version": "0.2.3",
+  "version": "0.3.0",
   "description": "View and control AERA Recovery through a browser over Wi-Fi or a low-latency USB connection.",
   "type": "ui-runtime",
   "entry": "main",
@@ -11,15 +11,141 @@
   "executable": "usr/bin/aera-plugin",
   "icon": "display",
   "payload": "runtime.xz",
-  "payload_url": "https://github.com/AERA-Plugins/mirror/releases/download/v0.2.3/runtime.xz",
-  "payload_size": 24732,
-  "payload_sha256": "ae2b1b2070e50985e2811b9f8ea0795009e18602adbcd1e76be5747a57aef9a8",
-  "expanded_size": 50583,
-  "expanded_sha256": "702fb17071e049bf35c5641792becf349b9e9aab340f71e418c7ac46309dc38d",
+  "payload_url": "https://github.com/AERA-Plugins/mirror/releases/download/v0.3.0/runtime.xz",
+  "payload_size": 44928,
+  "payload_sha256": "e9aea07e11c14affc136ef56446db33157ca7ce8df2aa4e54b1b5dc3feea6e02",
+  "expanded_size": 114871,
+  "expanded_sha256": "836ed6eaf5d450f25d10792d00b1cb8cc45ef8e6645ff994fa9ffda5347c5aef",
   "member_count": 5,
   "permissions": [
     "display",
     "touch-input",
     "screen-mirror"
-  ]
+  ],
+  "localizations": {
+    "ar_SA": {
+      "name": "AERA Mirror",
+      "description": "عرض والتحكم في استعادة AERA من خلال متصفح على Wi-Fi أو اتصال منخفض الكمون USB."
+    },
+    "bg_BG": {
+      "name": "AERA Mirror",
+      "description": "Преглеждайте и контролирайте AERA Recovery чрез браузър през Wi-Fi или връзка с ниска латентност USB."
+    },
+    "bn_BD": {
+      "name": "AERA Mirror",
+      "description": "একটি ব্রাউজারের মাধ্যমে Wi-Fi বা কম-লেন্সি USB সংযোগের উপর AERA রিকভারি দেখুন এবং নিয়ন্ত্রণ করুন।"
+    },
+    "ca_ES": {
+      "name": "AERA Mirror",
+      "description": "Veure i controlar la recuperació AERA mitjançant un navegador sobre Wi-Fi o una connexió de baixa latència USB."
+    },
+    "cs_CZ": {
+      "name": "AERA Mirror",
+      "description": "Prohlížejte a ovládejte obnovení AERA prostřednictvím prohlížeče přes Wi-Fi nebo připojení s nízkou latencí USB."
+    },
+    "de_DE": {
+      "name": "AERA Mirror",
+      "description": "Anzeige und Steuerung von AERA Recovery über einen Browser über Wi-Fi oder eine Verbindung mit niedriger Latenz USB."
+    },
+    "el_GR": {
+      "name": "AERA Mirror",
+      "description": "Προβάλετε και ελέγξτε την Ανάκτηση AERA μέσω ενός προγράμματος περιήγησης πάνω σε Wi-Fi ή μέσω μιας σύνδεσης χαμηλής καθυστέρησης USB."
+    },
+    "es-ES": {
+      "name": "AERA Mirror",
+      "description": "Ver y controla la recuperación AERA a través de un navegador sobre Wi-Fi o una conexión de baja latencia USB."
+    },
+    "fa_IR": {
+      "name": "AERA Mirror",
+      "description": "مشاهده و کنترل بازیابی AERA از طریق مرورگر با استفاده از Wi-Fi یا اتصال کم‌تأخیر USB."
+    },
+    "fr_FR": {
+      "name": "AERA Mirror",
+      "description": "Afficher et contrôler la récupération AERA via un navigateur sur Wi-Fi ou une connexion basse latence USB."
+    },
+    "he_IL": {
+      "name": "AERA Mirror",
+      "description": "צפה ושלוט ב-AERA Recovery דרך דפדפן על פני Wi-Fi או חיבור USB נמוך-השיהוי."
+    },
+    "hi_IN": {
+      "name": "AERA Mirror",
+      "description": "Wi-Fi या लो-लेटेंसी USB कनेक्शन के माध्यम से ब्राउज़र में AERA रिकवरी देखें और नियंत्रित करें।"
+    },
+    "hu": {
+      "name": "AERA Mirror",
+      "description": "Nézze meg és irányítsa a AERA helyreállítást böngészőn keresztül Wi-Fi-en vagy alacsony késleltetésű USB kapcsolat segítségével."
+    },
+    "id_ID": {
+      "name": "AERA Mirror",
+      "description": "Lihat dan kendalikan Pemulihan AERA melalui browser melalui koneksi Wi-Fi atau koneksi berlatensi rendah USB."
+    },
+    "it_IT": {
+      "name": "AERA Mirror",
+      "description": "Visualizza e controlla il Recupero AERA tramite browser su Wi-Fi o una connessione a bassa latenza USB."
+    },
+    "ja_JP": {
+      "name": "AERA Mirror",
+      "description": "ブラウザを通じて Wi-Fi または低遅延 USB 接続経由で AERA リカバリーを表示および操作します。"
+    },
+    "ko_KR": {
+      "name": "AERA Mirror",
+      "description": "브라우저를 통해 AERA 복구를 Wi-Fi 또는 저지연 USB 연결로 보고 제어합니다."
+    },
+    "nl_NL": {
+      "name": "AERA Mirror",
+      "description": "Bekijk en beheer AERA Recovery via een browser via Wi-Fi of een verbinding met lage latentie USB."
+    },
+    "no_NO": {
+      "name": "AERA Mirror",
+      "description": "Se og kontroller AERA-gjenoppretting gjennom en nettleser over Wi-Fi eller en lav-latens USB-tilkobling."
+    },
+    "pl_PL": {
+      "name": "AERA Mirror",
+      "description": "Wyświetlaj i kontroluj odzyskiwanie AERA przez przeglądarkę za pomocą Wi-Fi lub połączenia o niskiej latencji USB."
+    },
+    "pt_BR": {
+      "name": "AERA Mirror",
+      "description": "Visualize e controle a Recuperação AERA através de um navegador via Wi-Fi ou uma conexão de baixa latência USB."
+    },
+    "pt_PT": {
+      "name": "AERA Mirror",
+      "description": "Ver e controlar a recuperação AERA através de um navegador sobre a ligação Wi-Fi ou uma ligação de baixa latência USB."
+    },
+    "ro_RO": {
+      "name": "AERA Mirror",
+      "description": "Vizualizează și controlează recuperarea AERA printr-un browser prin Wi-Fi sau o conexiune USB cu latență scăzută."
+    },
+    "ru": {
+      "name": "AERA Mirror",
+      "description": "Просмотр и управление восстановлением AERA через браузер с использованием Wi-Fi или низколатентного соединения USB."
+    },
+    "sr_Cyrl": {
+      "name": "AERA Mirror",
+      "description": "Прегледајте и контролишите AERA рестаурацију преко прегледача преко Wi-Fi или конекције ниске латенције USB."
+    },
+    "th_TH": {
+      "name": "AERA Mirror",
+      "description": "ดูและควบคุมการกู้คืน AERA ผ่านเบราว์เซอร์บน Wi-Fi หรือการเชื่อมต่อความหน่วงต่ำ USB"
+    },
+    "tr_TR": {
+      "name": "AERA Mirror",
+      "description": "AERA Kurtarma'yı bir tarayıcı üzerinden Wi-Fi veya düşük gecikmeli USB bağlantısı ile görüp kontrol edin."
+    },
+    "uk_UA": {
+      "name": "AERA Mirror",
+      "description": "Переглядайте та керуйте відновленням AERA через браузер за допомогою Wi-Fi або через з'єднання з низькою затримкою USB."
+    },
+    "vi_VN": {
+      "name": "AERA Mirror",
+      "description": "Xem và điều khiển AERA Recovery qua trình duyệt qua Wi-Fi hoặc kết nối độ trễ thấp USB."
+    },
+    "zh_CN": {
+      "name": "AERA Mirror",
+      "description": "通过 Wi-Fi 或低延迟 USB 连接，在浏览器中查看并控制 AERA 恢复。"
+    },
+    "zh_TW": {
+      "name": "AERA Mirror",
+      "description": "通過瀏覽器使用 Wi-Fi 或低延遲 USB 連線查看並控制 AERA 恢復。"
+    }
+  }
 }

@@ -13,6 +13,8 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
+#include "i18n.h"
+
 #define AERA_MAGIC 0x41325049U
 #define AERA_API 2U
 #define AERA_PRIMARY 1U
@@ -144,96 +146,109 @@ static int export_launchers(void) {
 
 static int publish_home(int fd, const char *notice, int launchers_ready) {
   char body[1024];
-  char address[96] = "Not connected to Wi-Fi";
+  char address[96];
+  snprintf(address, sizeof(address), "%s", aera_tr("Not connected to Wi-Fi"));
   wifi_url(address, sizeof(address));
   snprintf(body, sizeof(body),
-      "View and control this recovery from a computer, tablet, or phone.\n\n"
-      "Wi-Fi address: %s\n\nDesktop launcher\n%s%s%s",
-      address,
+      "%s\n\n%s: %s\n\n%s\n%s%s%s",
+      aera_tr("View and control this recovery from a computer, tablet, or phone."),
+      aera_tr("Wi-Fi address"), address, aera_tr("Desktop launcher"),
       launchers_ready ? "Internal Storage/AERA/Mirror/Desktop" :
-                        "could not be written to phone storage",
+                        aera_tr("could not be written to phone storage"),
       notice && notice[0] ? "\n\n" : "", notice && notice[0] ? notice : "");
-  return send_message(fd, BEGIN_PAGE, 0, 0, 0, "Connection center",
+  return send_message(fd, BEGIN_PAGE, 0, 0, 0, aera_tr("Connection center"),
       body) ||
     send_message(fd, ADD_BUTTON, SHOW_WIFI_GUIDE, 0, AERA_PRIMARY,
-                 "Wi-Fi Mirror",
-                 "Open the live address from any browser on your network") ||
+                 aera_tr("Wi-Fi Mirror"),
+                 aera_tr("Open the live address from any browser on your network")) ||
     send_message(fd, ADD_BUTTON, SHOW_USB_GUIDE, 0, 0,
-                 "USB Mirror",
-                 "Low-latency connection through ADB and the desktop launcher") ||
+                 aera_tr("USB Mirror"),
+                 aera_tr("Low-latency connection through ADB and the desktop launcher")) ||
     send_message(fd, ADD_BUTTON, STOP_ALL, 0, 0,
-                 "Stop Mirror", "Close every active mirror connection") ||
+                 aera_tr("Stop Mirror"),
+                 aera_tr("Close every active mirror connection")) ||
     send_message(fd, COMMIT_PAGE, 0, 0, 0, 0, 0);
 }
 
 static int publish_wifi_guide(int fd, const char *result, int success) {
   char body[1024];
-  char address[96] = "Not connected to Wi-Fi";
+  char address[96];
+  snprintf(address, sizeof(address), "%s", aera_tr("Not connected to Wi-Fi"));
   wifi_url(address, sizeof(address));
   if (result && result[0]) {
-    snprintf(body, sizeof(body),
-        "%s\n\nOpen the address above on any device connected to this Wi-Fi. "
-        "Keep this recovery awake while mirroring.", result);
+    snprintf(body, sizeof(body), "%s\n\n%s", result,
+        aera_tr("Open the address above on any device connected to this Wi-Fi. "
+                "Keep this recovery awake while mirroring."));
   } else {
-    snprintf(body, sizeof(body),
-        "Browser address: %s\n\nConnect both devices to the same Wi-Fi, start "
-        "the mirror, then open this address in Chrome, Firefox, Safari, or Edge.",
-        address);
+    snprintf(body, sizeof(body), "%s: %s\n\n%s",
+        aera_tr("Browser address"), address,
+        aera_tr("Connect both devices to the same Wi-Fi, start the mirror, then "
+                "open this address in Chrome, Firefox, Safari, or Edge."));
   }
   return send_message(fd, BEGIN_PAGE, 0, 0, 0,
-                      success ? "Wi-Fi Mirror is live" :
-                      result && result[0] ? "Wi-Fi Mirror unavailable" :
-                                            "Wi-Fi Mirror",
+                      success ? aera_tr("Wi-Fi Mirror is live") :
+                      result && result[0] ? aera_tr("Wi-Fi Mirror unavailable") :
+                                            aera_tr("Wi-Fi Mirror"),
                       body) ||
     send_message(fd, ADD_BUTTON, START_WIFI, 0, AERA_PRIMARY,
-                 success ? "Restart Wi-Fi Mirror" : "Start Wi-Fi Mirror",
-                 success ? "Restart the live browser session" :
-                           "Start sharing and show the live browser address") ||
+                 success ? aera_tr("Restart Wi-Fi Mirror") :
+                           aera_tr("Start Wi-Fi Mirror"),
+                 success ? aera_tr("Restart the live browser session") :
+                           aera_tr("Start sharing and show the live browser address")) ||
     send_message(fd, ADD_BUTTON, SHOW_HOME, 0, 0,
-                 "Choose another connection", "Return to Wi-Fi or USB selection") ||
+                 aera_tr("Choose another connection"),
+                 aera_tr("Return to Wi-Fi or USB selection")) ||
     send_message(fd, ADD_BUTTON, STOP_ALL, 0, 0,
-                 "Stop Mirror", "Close every active mirror connection") ||
+                 aera_tr("Stop Mirror"),
+                 aera_tr("Close every active mirror connection")) ||
     send_message(fd, COMMIT_PAGE, 0, 0, 0, 0, 0);
 }
 
 static int publish_usb_guide(int fd, const char *result, int success,
                              int launchers_ready) {
-  char body[1024];
+  char body[1024], launcher[256];
+  snprintf(launcher, sizeof(launcher), "%s\n%s\n\n",
+      launchers_ready ? aera_tr("Launcher folder on this phone:") :
+                        aera_tr("Launcher export failed. Download instead from:"),
+      launchers_ready ? "Internal Storage/AERA/Mirror/Desktop" :
+                        "github.com/AERA-Plugins/mirror/releases/latest");
   snprintf(body, sizeof(body),
-      "%s%s%s"
-      "%s"
-      "1. Copy the launcher folder from the phone to the computer over MTP.\n"
-      "2. Install Android platform-tools (ADB) and connect the USB cable.\n"
-      "3. Tap Start below and approve the request.\n"
-      "4. Run the .cmd on Windows, .sh on Linux, or .command on macOS.\n"
-      "5. The launcher opens http://127.0.0.1:8080/ automatically.\n\n"
-      "Python, Pillow, and Tk are not required.",
-      result && result[0] ? (success ? "USB Mirror is ready.\n\n" :
-                             "USB Mirror could not start.\n\n") : "",
+      "%s%s%s%s%s"
+      "1. %s\n2. %s\n3. %s\n4. %s\n5. %s\n\n%s",
+      result && result[0] ? (success ? aera_tr("USB Mirror is ready.") :
+                             aera_tr("USB Mirror could not start.")) : "",
+      result && result[0] ? "\n\n" : "",
       result && result[0] ? result : "",
       result && result[0] ? "\n\n" : "",
-      launchers_ready ?
-          "Launcher folder on this phone:\n"
-          "Internal Storage/AERA/Mirror/Desktop\n\n" :
-          "Launcher export failed. Download instead from:\n"
-          "github.com/AERA-Plugins/mirror/releases/latest\n\n");
+      launcher,
+      aera_tr("Copy the launcher folder from the phone to the computer over MTP."),
+      aera_tr("Install Android platform-tools (ADB) and connect the USB cable."),
+      aera_tr("Tap Start below and approve the request."),
+      aera_tr("Run the .cmd on Windows, .sh on Linux, or .command on macOS."),
+      aera_tr("The launcher opens http://127.0.0.1:8080/ automatically."),
+      aera_tr("Python, Pillow, and Tk are not required."));
   return send_message(fd, BEGIN_PAGE, 0, 0, 0,
-                      result && result[0] ? "USB connection" : "USB setup",
+                      result && result[0] ? aera_tr("USB connection") :
+                                            aera_tr("USB setup"),
                       body) ||
     send_message(fd, ADD_BUTTON, START_USB, 0, AERA_PRIMARY,
-                 success ? "Restart USB Mirror" : "Start USB Mirror",
-                 "Keep the cable attached, then run the desktop launcher") ||
+                 success ? aera_tr("Restart USB Mirror") :
+                           aera_tr("Start USB Mirror"),
+                 aera_tr("Keep the cable attached, then run the desktop launcher")) ||
     send_message(fd, ADD_BUTTON, SHOW_HOME, 0, 0,
-                 "Choose another connection", "Return to Wi-Fi or USB selection") ||
+                 aera_tr("Choose another connection"),
+                 aera_tr("Return to Wi-Fi or USB selection")) ||
     send_message(fd, ADD_BUTTON, STOP_ALL, 0, 0,
-                 "Stop mirroring", "Close every active mirror connection") ||
+                 aera_tr("Stop mirroring"),
+                 aera_tr("Close every active mirror connection")) ||
     send_message(fd, COMMIT_PAGE, 0, 0, 0, 0, 0);
 }
 
 int main(void) {
   const int fd = 4;
   const int launchers_ready = export_launchers();
-  if (send_message(fd, HELLO, 0, AERA_API, AERA_API, 0, "AERA Mirror"))
+  if (send_message(fd, HELLO, 0, AERA_API, AERA_API, 0,
+                   aera_tr("AERA Mirror")))
     return 78;
   uint32_t operation_request = 100;
   uint32_t pending_operation = 0;
